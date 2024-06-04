@@ -2,28 +2,31 @@ import { computed } from 'vue'
 import { useNow } from '@vueuse/core'
 
 export const useTimer = () => {
+    const { floor } = Math
     const now = useNow()
 
-    const getCurrent = (startedAt: Date) => computed(() => {
-        const elapsed = now.value.getTime() - startedAt.getTime()
-
-        const totalSeconds = Math.floor(elapsed / 1000)
-        const totalMinutes = Math.floor(totalSeconds / 60)
-        const totalHours = Math.floor(totalMinutes / 60)
-
-        const remSeconds = totalSeconds % 60
-        const remMinutes = totalMinutes % 60
-
-        console.log(`${totalHours}:${remMinutes}:${remSeconds}`)
+    const calculateToTimer = (duration: number) => {
+        duration /= 1000
+        const durationNoHours = duration % 3600
 
         return {
-            hours: totalHours,
-            minutes: remMinutes,
-            seconds: remSeconds,
+            hours: floor(duration / 3600),
+            minutes: floor(durationNoHours / 60),
+            seconds: floor(durationNoHours % 60),
         }
-    })
+    }
+
+    const getReactiveTimer = (startTime: string, endTime?: string) => {
+        return computed(() => {
+            const start = new Date(startTime)
+            const end = new Date(endTime ?? now.value.toISOString())
+
+            return calculateToTimer(end.getTime() - start.getTime())
+        })
+    }
 
     return {
-        getCurrent,
+        calculateToTimer,
+        getReactiveTimer,
     }
 }

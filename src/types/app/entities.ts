@@ -9,6 +9,12 @@ export type Notification = {
     duration?: number
 }
 
+export type Timer = {
+    seconds: number
+    minutes: number
+    hours: number
+}
+
 export type FormField = {
     name: string
     group?: string

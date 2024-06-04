@@ -7,7 +7,7 @@ const props = defineProps<{
 }>()
 
 const { $emitter } = useNuxtApp()
-const { getCurrent } = useTimer()
+const { getReactiveTimer } = useTimer()
 
 const hours = ref<HTMLDivElement>()
 const minutes = ref<HTMLDivElement>()
@@ -26,7 +26,7 @@ $emitter.on('app:timer:stop', (id) => {
 })
 
 onMounted(() => {
-    const timer = getCurrent(props.startedAt)
+    const timer = getReactiveTimer(props.startedAt.toISOString())
 
     syncRef(useCssVar('--value', hours), computed<string>(() => String(timer.value.hours)))
     syncRef(useCssVar('--value', minutes), computed<string>(() => String(timer.value.minutes)))

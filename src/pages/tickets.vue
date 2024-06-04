@@ -1,35 +1,38 @@
 <script setup lang="ts">
+import { useNow } from '@vueuse/core'
 import type { DetailedWorkTime } from '~/types/generated/graphql'
+import type { Timer } from '~/types'
+import { useDateHelpers } from '~/utils/useDateHelpers'
 
 definePageMeta({
     middleware: 'auth',
 })
 
 const { user } = useAuth()
-const { getCurrent } = useTimer()
-
-// Initialize startedAt with a valid date if available
-const startedAt = user?.latest_time_entry?.started_at ? new Date(user.latest_time_entry.started_at) : new Date()
+const { calculateToTimer, getReactiveTimer } = useTimer()
+const { day } = useDateHelpers()
+const now = useNow()
 
 const latestWorkTimes = user?.latest_time_entry?.detailed_work_time as DetailedWorkTime[]
 
-function formatDuration(milliseconds: number) {
-    const totalSeconds = Math.floor(milliseconds / 1000)
-    const totalMinutes = Math.floor(totalSeconds / 60)
-    const totalHours = Math.floor(totalMinutes / 60)
+const wt = ref<Timer>()
+const entries = user?.timeEntries ?? []
+if (entries.length < 1 && user?.latest_time_entry) entries.push(user.latest_time_entry)
 
-    const seconds = totalSeconds % 60
-    const minutes = totalMinutes % 60
-    const hours = totalHours
+let result = 0 as number
+console.log(entries)
+entries.forEach((entry) => {
+    const from = new Date(entry?.finished_at ?? 0).getTime() as number
+    const to = new Date(entry?.started_at ?? 0).getTime() as number
 
-    return {
-        hours,
-        minutes,
-        seconds,
-    }
-}
+    result += to - from
+})
 
-console.log(user?.latest_time_entry?.detailed_work_time)
+wt.value = calculateToTimer(result)
+const getTimer = (start?: string, end?: string) => getReactiveTimer(
+    start ?? now.value.toISOString(),
+    end ?? now.value.toISOString(),
+)
 </script>
 
 <template>
@@ -37,12 +40,13 @@ console.log(user?.latest_time_entry?.detailed_work_time)
         <Card
             v-for="workTime in latestWorkTimes"
             :key="workTime.startTime?.toString()"
-            title="timer"
+            title="+time"
             class="p-2"
         >
-            {{ formatDuration(workTime.duration ?? 0).hours }}h
-            {{ formatDuration(workTime.duration ?? 0).minutes }}m
-            {{ formatDuration(workTime.duration ?? 0).seconds }}s
+            {{ day.format(new Date(workTime.startTime ?? 0).getDay()) }}
+            {{ getTimer(workTime?.startTime ?? '', workTime.endTime ?? '').value.hours }}h
+            {{ getTimer(workTime?.startTime ?? '', workTime.endTime ?? '').value.minutes }}m
+            {{ getTimer(workTime?.startTime ?? '', workTime.endTime ?? '').value.seconds }}s
         </Card>
     </div>
 </template>
