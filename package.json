@@ -1,6 +1,7 @@
 {
   "name": "clouds-app",
   "type": "module",
+    "license": "proprietary",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
