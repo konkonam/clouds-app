@@ -24,6 +24,8 @@ logs
 !.env.example
 dev-ops/localhost.pem
 dev-ops/localhost-key.pem
+flake.lock
+bun.lockb
 
 # Storyblok
 types/generated/*
