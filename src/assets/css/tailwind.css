@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html {
+        @apply h-full overflow-hidden scroll-smooth bg-transparent rounded-primary;
+    }
+    body {
+        @apply h-full flex flex-col text-white rounded-primary tracking-wide bg-dark;
+          font-family: 'Sono Variable', sans-serif;
+    }
+
+    * {
+        @apply cursor-default;
+
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    *::-webkit-scrollbar {
+        @apply hidden rounded-primary;
+    }
+
+    .d-btn {
+        @apply px-1.5 py-0.5 rounded-primary leading-none border-none;
+        cursor: default!important;
+        text-shadow: 3px 3px 10px rgba(0,0,0,.45);
+    }
+
+    .pop-up {
+        animation: button-pop var(--animation-btn, 0.25s) ease-out;
+    }
+
+    label {
+        animation: button-pop var(--animation-btn, 0.25s) ease-out;
+        transition: background-color 0.3s ease;
+    }
+}
