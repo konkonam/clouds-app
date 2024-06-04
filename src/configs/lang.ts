@@ -72,9 +72,9 @@ export default {
             en: 'time',
             de: 'zeit',
         },
-        bookings: {
-            en: 'bookings',
-            de: 'buchungen',
+        tickets: {
+            en: 'tickets',
+            de: 'tickets',
         },
         settings: {
             en: 'settings',

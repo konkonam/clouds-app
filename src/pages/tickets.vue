@@ -28,6 +28,8 @@ function formatDuration(milliseconds: number) {
         seconds,
     }
 }
+
+console.log(user?.latest_time_entry?.detailed_work_time)
 </script>
 
 <template>
